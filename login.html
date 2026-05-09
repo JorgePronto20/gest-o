@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — Gestão Smash Burger</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-box {
+      background: white;
+      padding: 30px;
+      width: 320px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 22px;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #222;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #000;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-box">
+    <h1>Gestão — Login</h1>
+
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+
+    <button onclick="login()">Entrar</button>
+
+    <div class="error" id="error-msg">Credenciais inválidas</div>
+  </div>
+
+  <script>
+    async function login() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const errorBox = document.getElementById("error-msg");
+
+      if (!email || !password) {
+        errorBox.innerText = "Preencha todos os campos";
+        errorBox.style.display = "block";
+        return;
+      }
+
+      try {
+        // 🔥 ALTERA AQUI PARA O TEU WORKER
+        const resp = await fetch("https://TEU_WORKER_URL/login-admin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await resp.json();
+
+        if (data.success) {
+          localStorage.setItem("adminAuth", data.token || "1");
+          window.location.href = "index.html";
+        } else {
+          errorBox.innerText = "Credenciais inválidas";
+          errorBox.style.display = "block";
+        }
+
+      } catch (err) {
+        errorBox.innerText = "Erro de ligação ao servidor";
+        errorBox.style.display = "block";
+      }
+    }
+  </script>
+
+</body>
+</html>
