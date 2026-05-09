@@ -1,0 +1,156 @@
+:root {
+  --cor-primaria: #d32f2f;     /* ajustar */
+  --cor-primaria-hover: #b71c1c;
+  --cor-secundaria: #1f2937;
+  --cor-secundaria-dark: #111827;
+  --cor-destaque: #f87171;
+
+  --texto-claro: #f9fafb;
+  --texto-escuro: #333;
+
+  --bg-geral: #f5f7fa;
+  --bg-tabela: #ffffff; /* mantém branco */
+  --bg-hover: #f9fafb;
+}
+
+/* Reset */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  margin: 0;
+  display: flex;
+  background: var(--bg-geral);
+  color: var(--texto-escuro);
+}
+
+/* MENU */
+#menu {
+  width: 220px;
+  background: linear-gradient(180deg, var(--cor-secundaria), var(--cor-secundaria-dark));
+  padding: 20px 15px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+}
+
+#menu button {
+  padding: 12px;
+  background: transparent;
+  color: var(--texto-claro);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+#menu button:hover {
+  background: rgba(255,255,255,0.1);
+  transform: translateX(4px);
+}
+
+#menu button.ativo {
+  background: var(--cor-primaria);
+  color: white;
+}
+
+/* CONTEÚDO */
+#conteudo {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+}
+
+/* SEÇÕES */
+.secao {
+  display: none;
+  animation: fadeIn 0.25s ease;
+}
+
+.secao.ativa {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* TABELAS (mantido branco) */
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  background: var(--bg-tabela);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+table th {
+  background: #f3f4f6;
+  text-align: left;
+  font-weight: 600;
+}
+
+table td, table th {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+table tr:hover {
+  background: var(--bg-hover);
+}
+
+/* BOTÕES */
+button.primary {
+  background: var(--cor-primaria);
+  color: white;
+  border-radius: 6px;
+  padding: 10px 14px;
+}
+
+button.primary:hover {
+  background: var(--cor-primaria-hover);
+}
+
+/* INPUTS */
+input, select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  margin-top: 5px;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--cor-primaria);
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+  #menu {
+    width: 70px;
+    padding: 10px;
+  }
+
+  #menu button {
+    font-size: 0;
+  }
+
+  #conteudo {
+    padding: 15px;
+  }
+}
