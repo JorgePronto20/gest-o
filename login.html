@@ -77,41 +77,40 @@
     <div class="error" id="error-msg">Credenciais inválidas</div>
   </div>
 
-  <script>
-    async function login() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const errorBox = document.getElementById("error-msg");
+ <script>
+  async function login() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const errorBox = document.getElementById("error-msg");
 
-      if (!email || !password) {
-        errorBox.innerText = "Preencha todos os campos";
-        errorBox.style.display = "block";
-        return;
-      }
-
-      try {
-        const resp = await fetch("https://TEU_WORKER_URL/login-admin", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
-        });
-
-        const data = await resp.json();
-
-        if (data.success) {
-          localStorage.setItem("adminAuth", data.token || "1");
-          window.location.href = "index.html";
-        } else {
-          errorBox.innerText = "Credenciais inválidas";
-          errorBox.style.display = "block";
-        }
-
-      } catch (err) {
-        errorBox.innerText = "Erro de ligação ao servidor";
-        errorBox.style.display = "block";
-      }
+    if (!email || !password) {
+      errorBox.innerText = "Preencha todos os campos";
+      errorBox.style.display = "block";
+      return;
     }
-  </script>
 
+    try {
+      const resp = await fetch("https://TEU_WORKER_URL/login-admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await resp.json();
+
+      if (data.success && data.token) {
+        localStorage.setItem("adminJWT", data.token);
+        window.location.href = "index.html";
+      } else {
+        errorBox.innerText = "Credenciais inválidas";
+        errorBox.style.display = "block";
+      }
+
+    } catch (err) {
+      errorBox.innerText = "Erro de ligação ao servidor";
+      errorBox.style.display = "block";
+    }
+  }
+</script>
 </body>
 </html>
