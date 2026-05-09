@@ -1,86 +1,463 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <title>The Smash Burger | Sistema de Checklists</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: "Inter", Arial, sans-serif;
-            background: linear-gradient(135deg, #1e1e2f, #2d2d44);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-
-        .container {
-            text-align: center;
-            background: rgba(255,255,255,0.06);
-            padding: 40px 60px;
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            max-width: 420px;
-        }
-
-        img.logo {
-            width: 120px;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            margin-bottom: 10px;
-            font-size: 32px;
-            font-weight: 700;
-        }
-
-        p {
-            margin-bottom: 30px;
-            font-size: 16px;
-            opacity: 0.85;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 14px 26px;
-            background: #4f8cff;
-            color: white;
-            border-radius: 8px;
-            font-size: 18px;
-            text-decoration: none;
-            transition: 0.2s;
-            font-weight: 600;
-        }
-
-        .btn:hover {
-            background: #3a6edc;
-        }
-
-        footer {
-            margin-top: 25px;
-            font-size: 13px;
-            opacity: 0.6;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Smash Burger — Checklists</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>" />
 </head>
 <body>
 
-    <div class="container">
-        <img src="logo.png" class="logo" alt="Logótipo">
+<!-- ══════════════════════════════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar__logo">
+    <span class="logo-icon">🍔</span>
+    <span class="logo-text">Smash Burger</span>
+  </div>
 
-        <h1>The Smash Burger</h1>
-        <p>Sistema de gestão de checklists operacionais.</p>
+  <nav class="sidebar__nav">
+    <a href="#" class="nav-item nav-item--active" data-nav="sec-dashboard">
+      <span class="nav-icon">📊</span><span>Dashboard</span>
+    </a>
 
-        <!-- BOTÃO CORRIGIDO -->
-        <a class="btn" href="./">Entrar no Sistema</a>
+    <a href="#" class="nav-item" data-nav="sec-colaboradores">
+      <span class="nav-icon">👥</span><span>Colaboradores</span>
+    </a>
 
-        <footer>
-            © 2026 — Gestão Operacional
-        </footer>
+    <a href="#" class="nav-item" data-nav="sec-modelos">
+      <span class="nav-icon">📋</span><span>Modelos</span>
+    </a>
+
+    <a href="#" class="nav-item" data-nav="sec-checklists">
+      <span class="nav-icon">✅</span><span>Checklists</span>
+    </a>
+
+    <a href="#" class="nav-item" data-nav="sec-alertas">
+      <span class="nav-icon">🔔</span><span>Alertas</span>
+      <span class="badge" id="badge-alertas">0</span>
+    </a>
+
+    <a href="#" class="nav-item" data-nav="sec-relatorios">
+      <span class="nav-icon">📈</span><span>Relatórios</span>
+    </a>
+
+    <a href="#" class="nav-item" data-nav="sec-configuracoes">
+      <span class="nav-icon">⚙️</span><span>Configurações</span>
+    </a>
+  </nav>
+
+  <div class="sidebar__footer">
+    <button class="btn-icon" id="btn-toggle-sidebar" title="Minimizar menu">◀</button>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════════════════════════════ -->
+<main class="main" id="main">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <button class="btn-icon" id="btn-menu-mobile">☰</button>
+    <div class="breadcrumb" id="breadcrumb">Dashboard</div>
+    <div class="topbar__actions">
+      <span class="topbar__date" id="topbar-date"></span>
+    </div>
+  </header>
+
+  <!-- Toast -->
+  <div id="toast-container"></div>
+
+<!-- ── DASHBOARD ────────────────────────────────────────────── -->
+<section id="sec-dashboard" data-section class="page page--active">
+  <div class="page-header">
+    <h1>Dashboard</h1>
+    <button class="btn btn--secondary" onclick="App.loadDashboard()">↻ Atualizar</button>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon">📋</div>
+      <div class="kpi-info">
+        <span class="kpi-value" id="kpi-hoje">—</span>
+        <span class="kpi-label">Checklists Hoje</span>
+      </div>
     </div>
 
+    <div class="kpi-card kpi-card--green">
+      <div class="kpi-icon">✅</div>
+      <div class="kpi-info">
+        <span class="kpi-value" id="kpi-concluidos">—</span>
+        <span class="kpi-label">Concluídos</span>
+      </div>
+    </div>
+
+    <div class="kpi-card kpi-card--orange">
+      <div class="kpi-icon">⏳</div>
+      <div class="kpi-info">
+        <span class="kpi-value" id="kpi-pendentes">—</span>
+        <span class="kpi-label">Pendentes</span>
+      </div>
+    </div>
+
+    <div class="kpi-card kpi-card--red">
+      <div class="kpi-icon">🔔</div>
+      <div class="kpi-info">
+        <span class="kpi-value" id="kpi-alertas">—</span>
+        <span class="kpi-label">Alertas</span>
+      </div>
+    </div>
+
+    <div class="kpi-card kpi-card--blue">
+      <div class="kpi-icon">👥</div>
+      <div class="kpi-info">
+        <span class="kpi-value" id="kpi-colaboradores">—</span>
+        <span class="kpi-label">Colaboradores Ativos</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card__header"><h2>Atividade Recente</h2></div>
+    <div class="card__body" id="atividade-lista">
+      <p class="empty-state">A carregar…</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── COLABORADORES ─────────────────────────────────────────── -->
+<section id="page-colaboradores" class="page">
+
+  <div class="page-header">
+    <h1>Colaboradores</h1>
+    <button class="btn btn--primary" onclick="App.openModal('modal-colaborador')">+ Novo Colaborador</button>
+  </div>
+
+  <div class="card">
+    <div class="card__body" id="colaboradores-lista">
+      <p class="empty-state">A carregar…</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ── MODELOS ───────────────────────────────────────────────── -->
+<section id="page-modelos" class="page">
+
+  <div class="page-header">
+    <h1>Modelos de Checklist</h1>
+    <button class="btn btn--primary" onclick="App.openModal('modal-modelo')">+ Novo Modelo</button>
+  </div>
+
+  <div class="card">
+    <div class="card__body" id="modelos-lista">
+      <p class="empty-state">A carregar…</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ── CHECKLISTS ────────────────────────────────────────────── -->
+<section id="page-checklists" class="page">
+
+  <div class="page-header">
+    <h1>Checklists</h1>
+    <button class="btn btn--primary" onclick="App.openModal('modal-checklist')">+ Novo Checklist</button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters card">
+    <div class="filter-group">
+      <label>Data</label>
+      <input type="date" id="filtro-data" />
+    </div>
+    <div class="filter-group">
+      <label>Estado</label>
+      <select id="filtro-estado">
+        <option value="">Todos</option>
+        <option value="pendente">Pendente</option>
+        <option value="em_progresso">Em Progresso</option>
+        <option value="concluido">Concluído</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Colaborador</label>
+      <select id="filtro-colaborador">
+        <option value="">Todos</option>
+      </select>
+    </div>
+    <button class="btn btn--secondary" onclick="App.loadChecklists()">Filtrar</button>
+  </div>
+
+  <div class="card">
+    <div class="card__body" id="checklists-lista">
+      <p class="empty-state">A carregar…</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ── ALERTAS ───────────────────────────────────────────────── -->
+<section id="page-alertas" class="page">
+
+  <div class="page-header">
+    <h1>Alertas</h1>
+    <button class="btn btn--primary" onclick="App.openModal('modal-alerta')">+ Novo Alerta</button>
+  </div>
+
+  <div class="card">
+    <div class="card__body" id="alertas-lista">
+      <p class="empty-state">A carregar…</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ── RELATÓRIOS ─────────────────────────────────────────────── -->
+<section id="page-relatorios" class="page">
+
+  <div class="page-header">
+    <h1>Relatórios</h1>
+  </div>
+
+  <div class="filters card">
+    <div class="filter-group">
+      <label>De</label>
+      <input type="date" id="relatorio-de" />
+    </div>
+    <div class="filter-group">
+      <label>Até</label>
+      <input type="date" id="relatorio-ate" />
+    </div>
+    <button class="btn btn--primary" onclick="App.gerarRelatorio()">Gerar Relatório</button>
+  </div>
+
+  <div id="relatorio-resultado"></div>
+
+</section>
+
+<!-- ── CONFIGURAÇÕES ─────────────────────────────────────────── -->
+<section id="page-configuracoes" class="page">
+
+  <div class="page-header">
+    <h1>Configurações</h1>
+  </div>
+
+  <div class="card">
+    <div class="card__body">
+      <form id="form-configuracoes" onsubmit="App.saveConfiguracoes(event)">
+        
+        <div class="form-group">
+          <label>Nome do Remetente</label>
+          <input type="text" id="cfg-nome_remetente" placeholder="The Smash Burger" />
+        </div>
+
+        <div class="form-group">
+          <label>Email Remetente</label>
+          <input type="email" id="cfg-email_remetente" placeholder="noreply@smashburger.pt" />
+        </div>
+
+        <div class="form-group">
+          <label>API Key de Email</label>
+          <input type="password" id="cfg-email_api_key" placeholder="••••••••" />
+        </div>
+
+        <div class="form-group form-group--inline">
+          <label>
+            <input type="checkbox" id="cfg-notificacoes" />
+            Notificações ativas
+          </label>
+        </div>
+
+        <div class="form-group form-group--inline">
+          <label>
+            <input type="checkbox" id="cfg-som_alertas" />
+            Som de alertas
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn--primary">Guardar</button>
+
+      </form>
+    </div>
+  </div>
+
+</section>
+
+</main><!-- /main -->
+
+<!-- ══════════════════════════════════════════════════════════════
+     MODAIS
+══════════════════════════════════════════════════════════════ -->
+
+<!-- Modal Colaborador -->
+<div class="modal-overlay" id="modal-colaborador">
+  <div class="modal">
+    <div class="modal__header">
+      <h2 id="modal-colaborador-title">Novo Colaborador</h2>
+      <button class="btn-icon modal-close" onclick="App.closeModal('modal-colaborador')">✕</button>
+    </div>
+    <form id="form-colaborador" onsubmit="App.submitColaborador(event)">
+      <input type="hidden" id="col-id" />
+      <div class="form-group">
+        <label>Nome *</label>
+        <input type="text" id="col-nome" required placeholder="Nome completo" />
+      </div>
+      <div class="form-group">
+        <label>Cargo</label>
+        <input type="text" id="col-cargo" placeholder="Ex: Cozinheiro" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="col-email" placeholder="email@exemplo.com" />
+      </div>
+      <div class="form-group">
+        <label>Telefone</label>
+        <input type="tel" id="col-telefone" placeholder="+351 912 345 678" />
+      </div>
+      <div class="modal__footer">
+        <button type="button" class="btn btn--secondary" onclick="App.closeModal('modal-colaborador')">Cancelar</button>
+        <button type="submit" class="btn btn--primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Modelo -->
+<div class="modal-overlay" id="modal-modelo">
+  <div class="modal modal--large">
+    <div class="modal__header">
+      <h2 id="modal-modelo-title">Novo Modelo</h2>
+      <button class="btn-icon modal-close" onclick="App.closeModal('modal-modelo')">✕</button>
+    </div>
+    <form id="form-modelo" onsubmit="App.submitModelo(event)">
+      <input type="hidden" id="mod-id" />
+      <div class="form-group">
+        <label>Nome *</label>
+        <input type="text" id="mod-nome" required placeholder="Ex: Abertura da Loja" />
+      </div>
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea id="mod-descricao" rows="2" placeholder="Descrição opcional…"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Itens do Checklist</label>
+        <div id="mod-itens-lista"></div>
+        <button type="button" class="btn btn--secondary btn--sm" onclick="App.addItemModelo()">+ Adicionar Item</button>
+      </div>
+      <div class="modal__footer">
+        <button type="button" class="btn btn--secondary" onclick="App.closeModal('modal-modelo')">Cancelar</button>
+        <button type="submit" class="btn btn--primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Checklist -->
+<div class="modal-overlay" id="modal-checklist">
+  <div class="modal">
+    <div class="modal__header">
+      <h2 id="modal-checklist-title">Novo Checklist</h2>
+      <button class="btn-icon modal-close" onclick="App.closeModal('modal-checklist')">✕</button>
+    </div>
+    <form id="form-checklist" onsubmit="App.submitChecklist(event)">
+      <input type="hidden" id="ck-id" />
+      <div class="form-group">
+        <label>Título *</label>
+        <input type="text" id="ck-titulo" required placeholder="Ex: Abertura — Segunda 05/05" />
+      </div>
+      <div class="form-group">
+        <label>Modelo</label>
+        <select id="ck-modelo_id">
+          <option value="">— Sem modelo —</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Colaborador</label>
+        <select id="ck-colaborador_id">
+          <option value="">— Não atribuído —</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Data de Execução</label>
+        <input type="date" id="ck-data_execucao" />
+      </div>
+      <div class="form-group">
+        <label>Estado</label>
+        <select id="ck-estado">
+          <option value="pendente">Pendente</option>
+          <option value="em_progresso">Em Progresso</option>
+          <option value="concluido">Concluído</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Notas</label>
+        <textarea id="ck-notas" rows="2" placeholder="Observações…"></textarea>
+      </div>
+      <div class="modal__footer">
+        <button type="button" class="btn btn--secondary" onclick="App.closeModal('modal-checklist')">Cancelar</button>
+        <button type="submit" class="btn btn--primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Alerta -->
+<div class="modal-overlay" id="modal-alerta">
+  <div class="modal">
+    <div class="modal__header">
+      <h2>Novo Alerta</h2>
+      <button class="btn-icon modal-close" onclick="App.closeModal('modal-alerta')">✕</button>
+    </div>
+    <form id="form-alerta" onsubmit="App.submitAlerta(event)">
+      <input type="hidden" id="al-id" />
+      <div class="form-group">
+        <label>Título *</label>
+        <input type="text" id="al-titulo" required placeholder="Título do alerta" />
+      </div>
+      <div class="form-group">
+        <label>Mensagem</label>
+        <textarea id="al-mensagem" rows="3" placeholder="Detalhe do alerta…"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Prioridade</label>
+        <select id="al-prioridade">
+          <option value="baixa">Baixa</option>
+          <option value="media" selected>Média</option>
+          <option value="alta">Alta</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Checklist associado</label>
+        <select id="al-checklist_id">
+          <option value="">— Nenhum —</option>
+        </select>
+      </div>
+      <div class="modal__footer">
+        <button type="button" class="btn btn--secondary" onclick="App.closeModal('modal-alerta')">Cancelar</button>
+        <button type="submit" class="btn btn--primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Detalhes Checklist -->
+<div class="modal-overlay" id="modal-checklist-detalhes">
+  <div class="modal modal--large">
+    <div class="modal__header">
+      <h2 id="ck-detail-title">Detalhes do Checklist</h2>
+      <button class="btn-icon modal-close" onclick="App.closeModal('modal-checklist-detalhes')">✕</button>
+    </div>
+    <div id="ck-detail-body"></div>
+    <div class="modal__footer">
+      <button class="btn btn--secondary" onclick="App.closeModal('modal-checklist-detalhes')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
